@@ -1,5 +1,7 @@
 import base64
+import json
 import requests
+import curlify
 
 
 def encode_pdf_to_base64(pdf_path):
@@ -19,14 +21,16 @@ def main():
     endpoint_url = "http://localhost:5000/extract_pdf_content"
 
     encoded_pdf = encode_pdf_to_base64(pdf_path)
+    print(encoded_pdf)
 
     payload = {"pdf_file": encoded_pdf}
 
     response = send_post_request(endpoint_url, payload)
 
     if response.status_code == 200:
-        print("PDF content extraction successful.")
-        print(response.json().encode("utf-8").decode("unicode_escape"))
+        resp = response.text.encode("utf-8").decode("unicode_escape")
+        print(resp)
+        print(json.loads(resp))
     else:
         print("PDF content extraction failed.")
 
