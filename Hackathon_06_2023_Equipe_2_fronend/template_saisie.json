@@ -1,0 +1,19 @@
+{
+  "commande": "",
+  "modele": "",
+  "date_de_la_facture": "",
+  "reference": "",
+  "montant_ht": "",
+  "montant_devise_ht": "",
+  "date_comptable": "",
+  "mode_de_reglement": "",
+  "type": "",
+  "commentaire": "",
+  "envoi_demande_bap": "",
+  "bap_reçu_le": "",
+  "tva": "",
+  "date_decheance_de_facture": "",
+  "date_decheance_facture_reelle": "",
+  "societe_de_refactoring": "",
+  "date_de_reception_de_facture": ""
+}

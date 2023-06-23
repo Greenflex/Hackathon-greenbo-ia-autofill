@@ -1,0 +1,23 @@
+= Hackaton: partie frontend
+:toc: auto
+:toc-title: Sommaire
+
+== Saisie d'une facture dans IQ
+image::./assets/media/README/image_2023-06-22-10-17-51_.png[]
+
+
+
+== Exécution
+
+python -m streamlit run app.py
+
+http://localhost:8501/
+
+
+
+== Template de la saisie
+
+[source, json]
+----
+include::template_saisie.json[]
+----

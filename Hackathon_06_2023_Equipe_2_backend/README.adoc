@@ -1,0 +1,13 @@
+image::./assets/media/README/image_2023-06-22-10-17-51_.png[]
+
+
+
+
+== State of the art of LLM
+
+* ChatGPT: released in Nov 2022 by OpenAI
+* LLaMa; released Feb2023 by Meta 
+* Alpaca; released in Mar. 2023 by Stanford
+* Dolly: Mar. 2023 by Databricks
+
+

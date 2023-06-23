@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+streamlit = "*"
+torch = ">=1.13.1,<2"
+accelerate = ">=0.16.0,<1"
+transformers = {version = ">=4.28.1,<5", extras = ["torch"]}
+flask = "*"
+pypdf2 = "*"
+requests = "*"
+python-dotenv = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
