@@ -1,32 +1,30 @@
 """
-To run this code please provide a valid openAI API token like so:
+To run thiscode please provide a valid openAI API token like so:
 
 API_TOKEN=your_openai_api_token python flask_api.py
 """
 
 
+from flask import Flask, request
 import base64
+import PyPDF2
+import traceback
 import io
 import json
-import os
-import traceback
-
-import PyPDF2
 import requests
+import os
+from time import sleep
 from dotenv import load_dotenv
-from flask import Flask, request
-
-app = Flask(__name__)
-
 
 # Load environment variables from .env
 load_dotenv()
+
+app = Flask(__name__)
 
 
 @app.route("/extract_pdf_content", methods=["POST"])
 def extract_pdf_content():
     OPENAI_API_TOKEN = os.getenv("API_TOKEN")
-    print(OPENAI_API_TOKEN)
 
     try:
         # Get the base64 encoded PDF file from the request
@@ -41,14 +39,7 @@ def extract_pdf_content():
 
         # Create a PDF reader object
         pdf_reader = PyPDF2.PdfReader(pdf_stream)
-        print("1- Extraction du texte de ce PDF...")
-        print(
-            "2- Création de la question à poser à l'IA textuelle à partir du template et du texte extrait..."
-        )
-        print("3- Appel de l'IA textuelle avec la question...")
-        print(
-            "4- On retourne le JSON renvoyé par l'IA textuelle, au format demandé par GreenBO"
-        )
+        print("\n1- Extraction du texte de ce PDF en base64...")
 
         # Extract the text content from each page
         content = []
@@ -60,9 +51,12 @@ def extract_pdf_content():
 
         # Limit content to 4000 chars not to use too much tokens
         content = str(content)[:4000]
-        print(content[:1000])
 
         # Format the AI question
+        print(
+            "\n2- Création de la question à poser à l'IA textuelle à partir du template et du texte extrait..."
+        )
+
         json_template = json.dumps(
             {
                 "commande": "",
@@ -85,12 +79,13 @@ def extract_pdf_content():
             }
         )
         question_text = (
-            """A partir de ce texte:\n%s\n\npeux tu extraire le JSON suivant:\n%s"""
+            """A partir de ce texte:\n%s\n\npeux tu formater le JSON suivant:\n%s"""
             % (content, json_template)
         )
-        print(question_text)
+        question_text += """\nPrend des initiatives pour arriver à remplir les valeurs associées aux clés de ce JSON"""
 
-        # Call the text AI OpenAI
+        # Call the text AI
+        print("\n3- Appel de l'IA textuelle avec la question...")
         url = "https://api.openai.com/v1/chat/completions"
         headers = {
             "Content-Type": "application/json",
@@ -102,18 +97,18 @@ def extract_pdf_content():
             "messages": [{"role": "user", "content": question_text}],
             "temperature": 0.7,
         }
+        response = requests.post(url, headers=headers, data=json.dumps(data))
+        print(response.json())
+        res = response.json()
+        out_json = res["choices"][0]["message"]["content"]
 
-        response_data = requests.post(url, headers=headers, data=json.dumps(data))
-        if "choices" in response_data:
-            # Access the data within the "choices" key
-            out_json = response_data["choices"][0]["message"]["content"]
-            # Process the data as needed
-            res = response_data.json()
-            print("\n [INFO] Response", res)
-            return out_json
-        else:
-            # Handle the case when the "choices" key is not present in the response
-            raise ValueError("Unexpected response structure")
+        print(
+            "\n4- On retourne le JSON renvoyé par l'IA textuelle, au format demandé par GreenBO"
+        )
+        out_json = "{" + out_json.split("{")[1]
+        print(out_json.encode("utf-8").decode("unicode_escape"))
+
+        return out_json
 
     except Exception as e:
         print(traceback.print_exc())
