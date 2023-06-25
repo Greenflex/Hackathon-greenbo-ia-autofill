@@ -78,8 +78,8 @@ def main():
             data = json.loads(resp)
             print(resp)
             print(data)
-            # Access the values in the JSON object
 
+            # Access the values in the JSON object
             commande = data["commande"]
             modele = data["modele"]
             date_de_la_facture = data["date_de_la_facture"]
